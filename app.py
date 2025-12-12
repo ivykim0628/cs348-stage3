@@ -19,6 +19,9 @@ app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
+with app.app_context():
+    db.create_all()
+
 
 # ----------------------------
 # Helpers
@@ -184,30 +187,25 @@ def report():
         },
     )
 
-from sqlalchemy import text
-
 # ----------------------------
 # CLI: flask --app app init-db
 # ----------------------------
 @app.cli.command("init-db")
 def init_db():
-    """Create tables, seed data, and create indexes."""
+    """Create tables and seed a little data."""
     with app.app_context():
         db.create_all()
-
         if not Club.query.first():
             db.session.add_all([
                 Club(name="Chess Club"),
                 Club(name="Robotics"),
                 Club(name="Art Society"),
             ])
-
         if not Room.query.first():
             db.session.add_all([
                 Room(building="Eng", number="101", max_capacity=40),
                 Room(building="Sci", number="202", max_capacity=60),
             ])
-
         if not Meeting.query.first():
             db.session.add_all([
                 Meeting(date=dt_date(2025, 11, 10), start_time=dt_time(12, 0),
@@ -217,22 +215,5 @@ def init_db():
                         duration_minutes=90, description="Workshop",
                         club_id=2, room_id=2, invited_count=35, accepted_count=22),
             ])
-
         db.session.commit()
-
-        # -------- Indexes for Stage 3 --------
-        db.session.execute(text(
-            "CREATE INDEX IF NOT EXISTS idx_meetings_date_time "
-            "ON meetings (date, start_time)"
-        ))
-        db.session.execute(text(
-            "CREATE INDEX IF NOT EXISTS idx_meetings_club "
-            "ON meetings (club_id)"
-        ))
-        db.session.execute(text(
-            "CREATE INDEX IF NOT EXISTS idx_meetings_room "
-            "ON meetings (room_id)"
-        ))
-        db.session.commit()
-
-        print("Database initialized, seeded, and indexed.")
+        print("Database initialized & seeded.")
