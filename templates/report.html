@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Meetings Report</h2>
+  <form method="get" action="/report">
+    <label>Club
+      <select name="club_id">
+        <option value="">All</option>
+        {% for c in clubs %}
+          <option value="{{ c.club_id }}" {{ 'selected' if filters.club_id==c.club_id else '' }}>{{ c.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Room
+      <select name="room_id">
+        <option value="">All</option>
+        {% for r in rooms %}
+          <option value="{{ r.room_id }}" {{ 'selected' if filters.room_id==r.room_id else '' }}>
+            {{ r.building }} {{ r.number }}
+          </option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>From <input type="date" name="date_from" value="{{ filters.date_from or '' }}"></label>
+    <label>To <input type="date" name="date_to" value="{{ filters.date_to or '' }}"></label>
+    <button type="submit">Apply</button>
+  </form>
+
+  <div class="stats">
+    <strong>Averages (current selection)</strong><br>
+    Duration: {{ stats.avg_duration }} min •
+    Invited: {{ stats.avg_invited }} •
+    Accepted: {{ stats.avg_accepted }} •
+    Attendance rate: {{ stats.avg_attendance_rate }}
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Date</th><th>Start</th><th>Club</th><th>Room</th><th>Invited</th><th>Accepted</th><th>Desc</th></tr>
+    </thead>
+    <tbody>
+      {% for m in rows %}
+      <tr>
+        <td>{{ m.date }}</td>
+        <td>{{ m.start_time }}</td>
+        <td>{{ m.club.name }}</td>
+        <td>{{ m.room.building }} {{ m.room.number }}</td>
+        <td>{{ m.invited_count }}</td>
+        <td>{{ m.accepted_count }}</td>
+        <td>{{ m.description or "" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

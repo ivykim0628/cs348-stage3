@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ title or "CS348 App" }}</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 24px; }
+    header a { margin-right: 12px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+    th, td { border: 1px solid #e5e7eb; padding: 8px; text-align: left; }
+    form.inline { display: inline; }
+    input, select { padding: 6px; margin: 4px 8px 4px 0; }
+    .stats { margin-top: 12px; padding: 12px; border: 1px solid #e5e7eb; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/">Home</a>
+    <a href="/meetings">Meetings</a>
+    <a href="/report">Report</a>
+  </header>
+  <hr>
+  {% block content %}{% endblock %}
+</body>
+</html>

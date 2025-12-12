@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>{{ "New" if mode=="create" else "Edit" }} Meeting</h2>
+  <form method="post" action="{{ '/meetings' if mode=='create' else '/meetings/%d/update' % m.meeting_id }}">
+    <label>Date
+      <input type="date" name="date"
+             value="{{ m.date.strftime('%Y-%m-%d') if m and m.date else '' }}"
+             min="{{ now.strftime('%Y-%m-%d') }}"
+             required>
+    </label>
+    
+    <label>Start time
+      <input type="time" name="start_time"
+             value="{{ m.start_time.strftime('%H:%M') if m and m.start_time else '' }}"
+             required>
+    </label>
+    
+    
+    <label>Duration (min) <input type="number" name="duration_minutes" value="{{ m.duration_minutes if m else 60 }}" required></label>
+    <label>Description <input type="text" name="description" value="{{ m.description if m else '' }}"></label>
+    <br>
+    <label>Club
+      <select name="club_id" required>
+        {% for c in clubs %}
+          <option value="{{ c.club_id }}" {{ 'selected' if m and m.club_id==c.club_id else '' }}>{{ c.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Room
+      <select name="room_id" required>
+        {% for r in rooms %}
+          <option value="{{ r.room_id }}" {{ 'selected' if m and m.room_id==r.room_id else '' }}>
+            {{ r.building }} {{ r.number }}
+          </option>
+        {% endfor %}
+      </select>
+    </label>
+    <br>
+    <label>Invited
+      <input type="number" name="invited_count" min="0"
+             value="{{ m.invited_count if m else '' }}" required>
+    </label>
+    
+    <label>Accepted
+      <input type="number" name="accepted_count" min="0"
+             value="{{ m.accepted_count if m else '' }}" required>
+    </label>
+    
+    <br>
+    <button type="submit">{{ "Create" if mode=="create" else "Save" }}</button>
+    <a href="/meetings">Cancel</a>
+  </form>
+{% endblock %}

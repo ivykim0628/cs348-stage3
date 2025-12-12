@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Meetings</h2>
+  <p><a href="/meetings/new">+ New Meeting</a></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th><th>Start</th><th>Duration</th><th>Club</th><th>Room</th>
+        <th>Invited</th><th>Accepted</th><th>Description</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for m in rows %}
+      <tr>
+        <td>{{ m.date }}</td>
+        <td>{{ m.start_time }}</td>
+        <td>{{ m.duration_minutes }} min</td>
+        <td>{{ m.club.name }}</td>
+        <td>{{ m.room.building }} {{ m.room.number }}</td>
+        <td>{{ m.invited_count }}</td>
+        <td>{{ m.accepted_count }}</td>
+        <td>{{ m.description or "" }}</td>
+        <td>
+          <a href="/meetings/{{ m.meeting_id }}/edit">Edit</a>
+          <form class="inline" method="post" action="/meetings/{{ m.meeting_id }}/delete"
+                onsubmit="return confirm('Delete this meeting?')">
+            <button type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
