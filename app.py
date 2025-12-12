@@ -19,8 +19,25 @@ app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
+
 with app.app_context():
     db.create_all()
+
+    # ---- Seed data if tables are empty (for cloud deployment) ----
+    if not Club.query.first():
+        db.session.add_all([
+            Club(name="Chess Club"),
+            Club(name="Robotics"),
+            Club(name="Art Society"),
+        ])
+
+    if not Room.query.first():
+        db.session.add_all([
+            Room(building="Eng", number="101", max_capacity=40),
+            Room(building="Sci", number="202", max_capacity=60),
+        ])
+
+    db.session.commit()
 
 
 # ----------------------------
